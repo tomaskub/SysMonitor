@@ -5,4 +5,8 @@ struct NetworkMetric {
     let bytesSent: UInt64
     let packetsReceived: UInt64
     let packetsSent: UInt64
+
+    static var zero: NetworkMetric {
+        NetworkMetric(bytesReceived: .zero, bytesSent: .zero, packetsReceived: .zero, packetsSent: .zero)
+    }
 }
