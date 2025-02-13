@@ -9,3 +9,5 @@ extension UsagePercentageable {
         Double(used) / Double(total) * 100
     }
 }
+
+protocol Metric {}

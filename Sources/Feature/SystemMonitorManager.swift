@@ -1,8 +1,12 @@
 import Foundation
 
-final class SystemMonitorManager: @unchecked Sendable {
+final class SystemMonitorManager {
     private var metrics = [SystemMetric]()
     private var isRunning = false 
+    private var cpuMetricCollector: MetricCollecting?
+    private var memoryMetricCollector: MetricCollecting?
+    private var diskMetricCollector: MetricCollecting?
+    private var networkMetricCollector: MetricCollecting?
 
     init() {}
 
@@ -18,6 +22,16 @@ final class SystemMonitorManager: @unchecked Sendable {
 
     func stopMonitoring() {}
 
-    private func collect() {}
+    private func collect() {
+        let metrics = SystemMetric(
+            timestamp: Date(),
+            cpuUsage: 0.0,
+            memoryUsage: memoryMetricCollector?.collect() as! MemoryMetric,
+            diskUsage: diskMetricCollector?.collect() as! DiskMetric,
+            networkUsage: networkMetricCollector?.collect() as! NetworkMetric
+        )
+
+        self.metrics.append(metrics)
+    }
 }
 
