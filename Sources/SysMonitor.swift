@@ -8,7 +8,19 @@ import ArgumentParser
 
 @main
 struct SysMonitor: ParsableCommand {
+    static let configuration = CommandConfiguration(
+        commandName: "sysmon",
+        abstract: "A system resource monitoring tool"
+    )
+
+    @Flag(name: .shortAndLong, help: "Show CPU usage")
+    var cpu = false 
+
+    @Flag(name: .shortAndLong, help: "Show memory usage")
+    var memory = false 
+
     mutating func run() throws {
-        print("Hello, world!")
+        let monitor = SystemMonitorManager()
+        monitor.startMonitoring()
     }
 }
