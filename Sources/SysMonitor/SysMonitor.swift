@@ -19,7 +19,7 @@ struct SysMonitor: ParsableCommand {
     @Flag(name: .shortAndLong, help: "Show memory usage")
     var memory = false 
 
-    mutating func run() throws {
+    static func run() throws {
         let monitor = SystemMonitorManager()
         monitor.startMonitoring()
     }
