@@ -5,6 +5,7 @@
 // https://swiftpackageindex.com/apple/swift-argument-parser/documentation
 
 import ArgumentParser
+import Swinject
 
 @main
 struct SysMonitor: ParsableCommand {
@@ -20,7 +21,29 @@ struct SysMonitor: ParsableCommand {
     var memory = false 
 
     static func run() throws {
-        let monitor = SystemMonitorManager()
+        let container = resolveContainer()
+        let monitor = container.resolve(SystemMonitorManager.self)
+        guard let monitor else {
+            throw RuntimeError.failedToResolve
+        }
         monitor.startMonitoring()
     }
-}
+
+    static func resolveContainer() -> Container {
+        let container = Container()
+
+        container.register(CpuMetricCollector.self) { _ in
+            CpuMetricCollector()
+        }
+
+        container.register(SystemMonitorManager.self) { resolver in
+            SystemMonitorManager(cpuCollector: resolver.resolve(CpuMetricCollector.self)!)
+        }
+
+        return container
+    }
+
+    enum RuntimeError: Error {
+        case failedToResolve
+    }
+} 
