@@ -20,8 +20,8 @@ struct SysMonitor: ParsableCommand {
     @Flag(name: .shortAndLong, help: "Show memory usage")
     var memory = false 
 
-    static func run() throws {
-        let container = resolveContainer()
+    func run() throws {
+        let container = Self.resolveContainer()
         let monitor = container.resolve(SystemMonitorManager.self)
         guard let monitor else {
             throw RuntimeError.failedToResolve
