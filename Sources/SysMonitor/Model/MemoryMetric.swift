@@ -5,4 +5,8 @@ struct MemoryMetric: UsagePercentageable {
     let used: UInt64
     let free: UInt64
     let cached: UInt64
+
+    static var zero: MemoryMetric {
+        MemoryMetric(total: .zero, used: .zero, free: .zero, cached: .zero)
+    }
 }
