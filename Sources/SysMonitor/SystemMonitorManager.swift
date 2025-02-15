@@ -7,8 +7,11 @@ final class SystemMonitorManager {
                 """
                 =====
                 SysMetrics: 
-                - CPU usage: \(metrics.last?.cpuUsage ?? .zero)
-                - Memory usage:  \(metrics.last?.memoryUsage.usagePercentage ?? .zero)
+                - CPU usage: \(metrics.last?.cpuUsage ?? .zero) %
+                - Memory usage:  \(metrics.last?.memoryUsage.usagePercentage ?? .zero) %
+                - Disk usage: 
+                    - Writes: \(metrics.last?.diskUsage.writeBytes ?? .zero) bytes
+                    - Reads: \(metrics.last?.diskUsage.readBytes ?? .zero) bytes
     """
             )
         }
@@ -16,14 +19,17 @@ final class SystemMonitorManager {
     private var isRunning = false 
     private var cpuMetricCollector: CpuMetricCollecting
     private var memMetricCollector: MemoryMetricCollecting
+    private var diskMetricCollector: DiskMetricCollecting
     private var timer: Timer?
 
     init(
         cpuCollector: CpuMetricCollecting,
-        memCollector: MemoryMetricCollecting
+        memCollector: MemoryMetricCollecting,
+        diskCollector: DiskMetricCollecting
     ) {
         cpuMetricCollector = cpuCollector
         memMetricCollector = memCollector
+        diskMetricCollector = diskCollector
     }
 
     func startMonitoring(with interval: TimeInterval = 1.0) {
@@ -50,7 +56,7 @@ final class SystemMonitorManager {
             timestamp: Date(),
             cpuUsage: cpuMetricCollector.collect(),
             memoryUsage: memMetricCollector.collect(),
-            diskUsage: .zero,
+            diskUsage: diskMetricCollector.collect(),
             networkUsage: .zero
         )
 
