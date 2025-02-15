@@ -14,10 +14,15 @@ final class SystemMonitorManager {
     }
     private var isRunning = false 
     private var cpuMetricCollector: CpuMetricCollecting
+    private var memMetricCollector: MemoryMetricCollecting
     private var timer: Timer?
 
-    init(cpuCollector: CpuMetricCollecting) {
+    init(
+        cpuCollector: CpuMetricCollecting,
+        memCollector: MemoryMetricCollecting
+    ) {
         cpuMetricCollector = cpuCollector
+        memMetricCollector = memCollector
     }
 
     func startMonitoring(with interval: TimeInterval = 1.0) {
