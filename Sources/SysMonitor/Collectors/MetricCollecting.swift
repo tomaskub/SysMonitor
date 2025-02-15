@@ -10,3 +10,7 @@ protocol MemoryMetricCollecting {
     func collect() -> MemoryMetric
 }
 
+
+protocol DiskMetricCollecting {
+    func collect() -> DiskMetric
+}
