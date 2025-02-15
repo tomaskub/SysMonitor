@@ -7,7 +7,8 @@ final class SystemMonitorManager {
                 """
                 =====
                 SysMetrics: 
-                - CPU Usage: \(metrics.last?.cpuUsage ?? Double.zero)
+                - CPU usage: \(metrics.last?.cpuUsage ?? .zero)
+                - Memory usage:  \(metrics.last?.memoryUsage.usagePercentage ?? .zero)
     """
             )
         }
@@ -48,7 +49,7 @@ final class SystemMonitorManager {
         let metrics = SystemMetric(
             timestamp: Date(),
             cpuUsage: cpuMetricCollector.collect(),
-            memoryUsage:.zero,
+            memoryUsage: memMetricCollector.collect(),
             diskUsage: .zero,
             networkUsage: .zero
         )
