@@ -7,17 +7,23 @@ final class SystemMonitorManager {
                 """
                 =====
                 SysMetrics: 
-                - CPU Usage: \(metrics.last?.cpuUsage ?? Double.zero)
+                - CPU usage: \(metrics.last?.cpuUsage ?? .zero)
+                - Memory usage:  \(metrics.last?.memoryUsage.usagePercentage ?? .zero)
     """
             )
         }
     }
     private var isRunning = false 
     private var cpuMetricCollector: CpuMetricCollecting
+    private var memMetricCollector: MemoryMetricCollecting
     private var timer: Timer?
 
-    init(cpuCollector: CpuMetricCollecting) {
+    init(
+        cpuCollector: CpuMetricCollecting,
+        memCollector: MemoryMetricCollecting
+    ) {
         cpuMetricCollector = cpuCollector
+        memMetricCollector = memCollector
     }
 
     func startMonitoring(with interval: TimeInterval = 1.0) {
@@ -43,7 +49,7 @@ final class SystemMonitorManager {
         let metrics = SystemMetric(
             timestamp: Date(),
             cpuUsage: cpuMetricCollector.collect(),
-            memoryUsage:.zero,
+            memoryUsage: memMetricCollector.collect(),
             diskUsage: .zero,
             networkUsage: .zero
         )

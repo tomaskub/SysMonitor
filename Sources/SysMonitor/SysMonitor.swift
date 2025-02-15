@@ -36,8 +36,15 @@ struct SysMonitor: ParsableCommand {
             CpuMetricCollector()
         }
 
+        container.register(MemMetricCollector.self) { _ in
+            MemMetricCollector()
+        }
+
         container.register(SystemMonitorManager.self) { resolver in
-            SystemMonitorManager(cpuCollector: resolver.resolve(CpuMetricCollector.self)!)
+            SystemMonitorManager(
+                cpuCollector: resolver.resolve(CpuMetricCollector.self)!,
+                memCollector: resolver.resolve(MemMetricCollector.self)!
+            )
         }
 
         return container

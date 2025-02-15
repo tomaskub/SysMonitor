@@ -1,11 +1,3 @@
-protocol MetricCollecting {
-    func collect() -> UsagePercentageable
-}
-
-protocol CpuMetricCollecting {
-    func collect() -> Double
-}
-
 import Darwin
 
 class CpuMetricCollector: CpuMetricCollecting {
