@@ -7,6 +7,6 @@ protocol CpuMetricCollecting {
 }
 
 protocol MemoryMetricCollecting {
-    func collect() -> Double
+    func collect() -> MemoryMetric
 }
 
