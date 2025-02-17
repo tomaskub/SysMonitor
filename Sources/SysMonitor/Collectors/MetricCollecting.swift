@@ -14,3 +14,7 @@ protocol MemoryMetricCollecting {
 protocol DiskMetricCollecting {
     func collect() -> DiskMetric
 }
+
+protocol NetworkMetricCollecting {
+    func collect() -> NetworkMetric
+}
