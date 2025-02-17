@@ -44,11 +44,16 @@ struct SysMonitor: ParsableCommand {
             DiskMetricCollector()
         }
 
+        container.register(NetworkMetricCollector.self) { _ in
+            NetworkMetricCollector()
+        }
+
         container.register(SystemMonitorManager.self) { resolver in
             SystemMonitorManager(
                 cpuCollector: resolver.resolve(CpuMetricCollector.self)!,
                 memCollector: resolver.resolve(MemMetricCollector.self)!,
-                diskCollector: resolver.resolve(DiskMetricCollector.self)!
+                diskCollector: resolver.resolve(DiskMetricCollector.self)!,
+                networkCollector: resolver.resolve(NetworkMetricCollector.self)!
             )
         }
 
