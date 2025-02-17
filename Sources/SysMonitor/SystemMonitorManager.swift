@@ -12,6 +12,9 @@ final class SystemMonitorManager {
                 - Disk usage: 
                     - Writes: \(metrics.last?.diskUsage.writeBytes ?? .zero) bytes
                     - Reads: \(metrics.last?.diskUsage.readBytes ?? .zero) bytes
+                - Network usage:
+                    - In: \(metrics.last?.networkUsage.bytesReceived ?? .zero) bytes
+                    - Out: \(metrics.last?.networkUsage.bytesSent ?? .zero) bytes
     """
             )
         }
@@ -20,16 +23,19 @@ final class SystemMonitorManager {
     private var cpuMetricCollector: CpuMetricCollecting
     private var memMetricCollector: MemoryMetricCollecting
     private var diskMetricCollector: DiskMetricCollecting
+    private var networkMetricCollector: NetworkMetricCollecting
     private var timer: Timer?
 
     init(
         cpuCollector: CpuMetricCollecting,
         memCollector: MemoryMetricCollecting,
-        diskCollector: DiskMetricCollecting
+        diskCollector: DiskMetricCollecting,
+        networkCollector: NetworkMetricCollecting
     ) {
         cpuMetricCollector = cpuCollector
         memMetricCollector = memCollector
         diskMetricCollector = diskCollector
+        networkMetricCollector = networkCollector
     }
 
     func startMonitoring(with interval: TimeInterval = 1.0) {
@@ -57,7 +63,7 @@ final class SystemMonitorManager {
             cpuUsage: cpuMetricCollector.collect(),
             memoryUsage: memMetricCollector.collect(),
             diskUsage: diskMetricCollector.collect(),
-            networkUsage: .zero
+            networkUsage: networkMetricCollector.collect()
         )
 
         self.metrics.append(metrics)
