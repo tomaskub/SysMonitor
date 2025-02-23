@@ -1,22 +1,9 @@
 import Foundation
+import Termbox
 
 final class SystemMonitorManager {
     private var metrics = [SystemMetric]() {
         didSet {
-            print(
-                """
-                =====
-                SysMetrics: 
-                - CPU usage: \(metrics.last?.cpuUsage ?? .zero) %
-                - Memory usage:  \(metrics.last?.memoryUsage.usagePercentage ?? .zero) %
-                - Disk usage: 
-                    - Writes: \(metrics.last?.diskUsage.writeBytes ?? .zero) bytes
-                    - Reads: \(metrics.last?.diskUsage.readBytes ?? .zero) bytes
-                - Network usage:
-                    - In: \(metrics.last?.networkUsage.bytesReceived ?? .zero) bytes
-                    - Out: \(metrics.last?.networkUsage.bytesSent ?? .zero) bytes
-    """
-            )
         }
     }
     private var isRunning = false 
@@ -24,18 +11,21 @@ final class SystemMonitorManager {
     private var memMetricCollector: MemoryMetricCollecting
     private var diskMetricCollector: DiskMetricCollecting
     private var networkMetricCollector: NetworkMetricCollecting
+    private var drawer: Drawing
     private var timer: Timer?
 
     init(
         cpuCollector: CpuMetricCollecting,
         memCollector: MemoryMetricCollecting,
         diskCollector: DiskMetricCollecting,
-        networkCollector: NetworkMetricCollecting
+        networkCollector: NetworkMetricCollecting,
+            drawing: Drawing
     ) {
         cpuMetricCollector = cpuCollector
         memMetricCollector = memCollector
         diskMetricCollector = diskCollector
         networkMetricCollector = networkCollector
+        drawer = drawing
     }
 
     func startMonitoring(with interval: TimeInterval = 1.0) {
@@ -43,8 +33,9 @@ final class SystemMonitorManager {
         timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
             guard let self,
                 self.isRunning else { return }
-
+            self.peekEvents()
             self.collect()
+            self.drawer.draw(message: "Collected metric: cpu usage \(metrics.last?.cpuUsage ?? .zero) %")
         }
 
         RunLoop.current.run()
@@ -57,6 +48,13 @@ final class SystemMonitorManager {
         exit(0)
     }
 
+    private func peekEvents() {
+        guard let event = Termbox.peekEvent(timoutInMilliseconds: 250) else { return }
+        if case .character(_, let value) = event,
+            value == "q" {
+            stopMonitoring()
+        }
+    }
     private func collect() {
         let metrics = SystemMetric(
             timestamp: Date(),
@@ -69,6 +67,7 @@ final class SystemMonitorManager {
         self.metrics.append(metrics)
     }
 
+    // this seem to not work with termbox running
     private func setupExitHandler() {
         signal(SIGINT) { _ in
             print("\nExiting...")

@@ -48,12 +48,17 @@ struct SysMonitor: ParsableCommand {
             NetworkMetricCollector()
         }
 
+        container.register(Drawer.self) { _ in
+            Drawer()
+        }
+
         container.register(SystemMonitorManager.self) { resolver in
             SystemMonitorManager(
                 cpuCollector: resolver.resolve(CpuMetricCollector.self)!,
                 memCollector: resolver.resolve(MemMetricCollector.self)!,
                 diskCollector: resolver.resolve(DiskMetricCollector.self)!,
-                networkCollector: resolver.resolve(NetworkMetricCollector.self)!
+                networkCollector: resolver.resolve(NetworkMetricCollector.self)!,
+                drawing: resolver.resolve(Drawer.self)!
             )
         }
 
