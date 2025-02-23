@@ -7,6 +7,7 @@ let package = Package(
     name: "SysMonitor",
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.2.0"),
+        .package(url: "https://github.com/dduan/termbox.git", from: "1.0.1"),
         .package(url: "https://github.com/swinject/swinject.git", from: "2.8.0")
     ],
     targets: [
@@ -16,6 +17,7 @@ let package = Package(
             name: "SysMonitor",
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
+                .product(name: "Termbox", package: "termbox"),
                 .product(name: "Swinject", package: "Swinject")
             ]
         ),
