@@ -33,7 +33,7 @@ final class SystemMonitorManager {
         timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
             guard let self,
                 self.isRunning else { return }
-            self.pollEvents()
+            self.peekEvents()
             self.collect()
             self.drawer.draw(message: "Collected metric: cpu usage \(metrics.last?.cpuUsage ?? .zero) %")
         }
@@ -48,8 +48,8 @@ final class SystemMonitorManager {
         exit(0)
     }
 
-    private func pollEvents() {
-        guard let event = Termbox.pollEvent() else { return }
+    private func peekEvents() {
+        guard let event = Termbox.peekEvent(timoutInMilliseconds: 250) else { return }
         if case .character(_, let value) = event,
             value == "q" {
             stopMonitoring()
